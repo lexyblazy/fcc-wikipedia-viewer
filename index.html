@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="utf-8">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/semantic-ui/2.2.10/semantic.min.css">
+    <title>WIkipedia viewer</title>
+</head>
+
+<body>
+    <div class="ui inverted menu">
+        <div class="ui header item">
+            Wikipedia viewer
+        </div>
+        <div class="right menu">
+            <div class="item">
+                <form class="ui form">
+                    <div class="ui icon input">
+                        <input type='text' id='search' placeholder="Search...">
+                        <i class="search link icon"></i>
+                    </div>
+                    <button type="submit" id='submit' class="ui inverted button">Search</button>
+                </form>
+            </div>
+        </div>
+    </div>
+    <div class="ui container text segment">
+        <ul class="ui list message"></ul>
+    </div>
+
+    <script src="https://code.jquery.com/jquery-3.2.1.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/semantic-ui/2.2.10/semantic.min.js"></script>
+    <script>
+        $('form').on('submit', function(e) {
+            e.preventDefault();
+            var api = 'https://en.wikipedia.org/w/api.php?format=json&action=query&generator=search&gsrnamespace=0&gsrlimit=10&prop=pageimages|extracts&pilimit=max&exintro&explaintext&exsentences=1&exlimit=max&gsrsearch=';
+            var title = $('input#search').val();
+            var url = api + title;
+            var page = 'https://en.wikipedia.org/?curid=';
+            $.getJSON(url, function(result) {
+
+                var obj = result.query.pages;
+                Object.keys(obj).forEach(function(key) {
+                    var li = $('<li></li>');
+                    li.html(`<a target = '_blank' href = ${page}${key}>${obj[key].title}</a><br><p>${obj[key].extract}</p>`);
+                    $('.message').append(li);
+
+                });
+            })
+
+        })
+
+    </script>
+</body>
+
+</html>
